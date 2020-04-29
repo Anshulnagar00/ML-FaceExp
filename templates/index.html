@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+
+<div class="container " style="margin-top: 60px;">
+            <div class="row" >
+                <div class="col-sm">
+                    <div id="content">
+                        <h2>Let's Predict Your Mood</h2>
+                    </div>
+
+                    <form id="upload-file" method="post" enctype="multipart/form-data">
+                        <label for="imageUpload" class="upload-label">
+                        Pick Image ...
+                        </label>
+                        <input type="file" name="file" id="imageUpload" accept=".png, .jpg, .jpeg">
+                    </form>
+
+                    <div class="image-section" style="display:none;" >
+                        <div class="img-preview">
+                            <div id="imagePreview">
+                            </div>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary btn-lg " id="btn-predict">Predict!</button>
+                        </div>
+                    </div>
+                    <div class="loader" style="display:none;"></div>
+                </div>
+
+                <div class="col-sm">
+                    <h3>your predictions will show below</h3>
+                    <div id="result" style="display:none;" >
+
+                        <div class="holder">
+                        <div class="bar container" data-percent="0%"><span class="label col ">😄</span></div>
+                        <div class="bar container" data-percent="0%"><span class="label second col">😥</span></div>
+                        <div class="bar container" data-percent="0%"><span class="label col">😲</span></div>
+                        <div class="bar container" data-percent="0%"><span class="label second col">😨</span></div>
+                        <div class="bar container" data-percent="0%"><span class="label col">😡</span></div>
+                        <div class="bar container" data-percent="0%"><span class="label second col">🙃</span></div>
+                        <div class="bar container" data-percent="0%"><span class="label col">😑</span></div>
+
+                    </div>
+                      <div class="container">
+                        <h4>Faces Detected</h4>
+                        <div class="scrollmenu">
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+
+{% endblock %}

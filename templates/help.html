@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container" style="margin-top :60px">
+            <div>
+                <h1>Help</h1>
+                <div class="container" style="margin-bottom: 80px;">
+                <h2>Tips</h2>
+                <ul>
+                    <li>Upload image in which faces appears big for better detection</li>
+                    <li>In Some Cases it Detects only one Face so face selection option does not appears</li>
+                    <li>please make sure that the previewed image is correctly oriented</li>
+                </ul>
+                <h2>About Predictions</h2>
+                <ul>
+                  <li>Results are affected by the orientation(rotation) of image</li>
+                  <li>Expressions Recognition Model is Trained on "Facial Expressions Recognition" competition dataset on Kaggle with val_accuracy of 64%</li>
+                  <li>the Prediction are in form of percent of each category(emotions)</li>
+                  <li>🙃 emoti represents Neutral emotion</li>
+                </ul>
+                </div>
+
+            </div> 
+
+            <footer>
+                <div class="container row" style="margin-left: 0%; margin-right: 0%; text-align: center; border-top: 4px solid gold">
+                    <div class="col d-inline-block" ><a href="https://github.com/Anshulnagar00"><img src="https://cdn.iconscout.com/icon/free/png-512/github-153-675523.png" class="img-circle" alt="github-logo" width="40" height="40"><h6 style="color: white; padding-top: 4px;" >Github</h6></a></div>
+                    <div class="col d-inline-block"><a href="https://www.linkedin.com/in/anshulnagar00/"><img src="https://cdn4.iconfinder.com/data/icons/social-messaging-ui-color-shapes-2-free/128/social-linkedin-circle-512.png" class="linkedin-logo" alt="Cinque Terre" width="40" height="40" ><h6 style="color: white; padding-top: 4px;" >LinkedIn</h6></a></div>
+                    <div class="col d-inline-block"><a href="https://www.kaggle.com/anshulnagar/account"><img src="https://storage.googleapis.com/kaggle-organizations/975/thumbnail.png%3Fr=497" class="img-circle" alt="kaggle-logo" width="40" height="40"><h6 style="color: white; padding-top: 4px;" >Kaggle</h6></a></div>
+                </div>
+                <div class="container" style="text-align: center;">
+                    <h4><span style="font-size: 18px;">E-mail:</span> <span style="color: tomato;">nagaranshul9@gmail.com</span></h4>
+                </div>
+            </footer>
+</div>
+{% endblock %}
