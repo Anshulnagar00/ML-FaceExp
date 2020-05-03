@@ -8,7 +8,6 @@ import numpy as np
 # Keras
 import tensorflow as tf
 from tensorflow import keras
-import tensorflow_hub as hub
 import numpy as np
 import pandas as pd
 # Flask utils
@@ -32,12 +31,32 @@ from mtcnn.mtcnn import MTCNN
 
 import time
 
+# firebase
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import db
+from firebase_admin import storage
+
+
+
+# Fetch the service account key JSON file contents
+cred = credentials.Certificate('firebase.json')
+
+# Initialize the app with a service account, granting admin privileges
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://faceexp-26f12.firebaseio.com/'
+})
+
+
+# As an admin, the app has access to read and write all data, regradless of Security Rules
+ref = db.reference('restricted_access/secret_document')
+
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
 
 MODEL_PATH = os.path.join(THIS_FOLDER,'FaceExp-V2.0_model (6).h5')
-UPLOAD_FOLDER = os.path.join(THIS_FOLDER,'static/uploads')
+UPLOAD_FOLDER = os.path.join(THIS_FOLDER,'static')
 TEMPLATES_FOLDER = 'templates'
 STATIC_FOLDER = 'static'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
@@ -51,6 +70,32 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 FaceExp_model = tf.keras.models.load_model(MODEL_PATH)
 
+# Haarcascade model for face detection
+face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+
+def get_faces(image_path,size=(160,160)):
+    results=[]
+    img = cv2.imread(image_path)
+    face_img = img.copy()
+    temp_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
+    face_rects = face_cascade.detectMultiScale(temp_img, scaleFactor=1.2, minNeighbors=5)
+    for (x, y, w, h) in face_rects:
+        temp_img = face_img[y:y+h,x:x+w]
+        temp_img = cv2.resize(temp_img,size)
+        results.append(temp_img)
+    return results
+
+
+def firebase_upload(file_path):
+  # load image from file
+  image = Image.open(file_path)
+  # convert to RGB, if needed
+  image = image.convert('RGB')
+  # convert to array
+  pixels = asarray(image)
+  # create the detector, using default weights
+  db.reference('images').child(time.ctime()).set(image_2_dataURI(pixels))
+    
 
 # extract a single face from a given photograph
 def extract_face(filename, required_size=(160, 160)):
@@ -159,6 +204,7 @@ def upload():
         f = request.files['file']
         file_path = os.path.join(UPLOAD_FOLDER,secure_filename("IMG_"+time.ctime()+f.filename))
         f.save(file_path)
+        firebase_upload(file_path)
         result = get_descp_results(file_path)
         ##########  Final Predictions  ##########
         return result
@@ -174,9 +220,7 @@ def feedback():
     f = request.form.get('feedback')
     data="FeedBack :"+time.ctime()+" -> "+f
     print(data)
-    F = open("requestdata.txt","a")
-    F.write("\n"+data)
-    F.close
+    db.reference('Feedbacks').child(time.ctime()).set(data)
     return "Success"
 
 @app.route('/help', methods=['GET'])
@@ -184,5 +228,3 @@ def help():
   return render_template('help.html')
 
 
-if __name__ == '__main__':
-    app.run(threaded=False)
